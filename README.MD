@@ -33,23 +33,40 @@ La primera parte (web corporativa estática) está en el repositorio [Talleres-M
 - 💻 **Repositorio GitHub:** [talleres-moises-php-app](https://github.com/carmen-404/talleres-moises-php-app)
 - 🌐 **Alojamiento web:** <!-- TODO: pegar aquí la URL del hosting --> https://PENDIENTE
 
-## Base de datos
+## Conexión a la base de datos (`config.php`)
 
-| Dato | Valor |
-|------|-------|
-| Motor | MySQL 8.0.16+ / MariaDB 10.2.1+ |
-| Nombre de la base de datos | `talleres_moises` |
-| Usuario | `PENDIENTE` |
-| Password | `PENDIENTE` |
-| Host | `localhost` |
+| Parámetro | Valor |
+|---|---|
+| Servidor | `db` |
+| Puerto | `3306` |
+| Base de datos | `talleresMoises` |
+| Usuario | `root` |
+| Password | `test` |
 
 > Los scripts SQL están en la carpeta `sql/`:
-> - `backup.sql`: crea la base de datos `talleres_moises`, las tablas, relaciones y datos.
+> - `backup.sql`: crea la base de datos `talleresMoises`, las tablas, relaciones y datos.
 > - `backup_sin_create_database.sql`: igual, pero sin `CREATE DATABASE` (para hostings donde la base de datos ya viene creada).
+
+## Puesta en marcha
+1. Copiar la carpeta en `www/` (docker-lamp) y abrir `http://localhost/talleres-moises-crud-php/`.
+2. Importar `sql/backup.sql` (crea BD, tablas, relaciones y datos). Si la BD ya existe: `sql/backup_sin_create_database.sql`.
+3. Requiere PHP 7.4+ con mysqli y MySQL 8.0.16+ / MariaDB 10.2.1+ (restricción `CHECK` de `franja_horaria`).
+4. Las imágenes se guardan en la BD (columna `imagen`, BLOB): máximo 2 MB (límite por defecto de `upload_max_filesize`)
 
 ### Entidades (modelo relacional)
 
-`CODIGO_POSTAL` → `CLIENTE` → `COCHE` → `RESERVA` → `SERVICIO`
+```mermaid
+erDiagram
+  CODIGO_POSTAL ||--o{ CLIENTE : "id_cp"
+  CLIENTE ||--o{ COCHE : "id_cliente"
+  COCHE ||--o{ RESERVA : "id_coche"
+  RESERVA ||--o{ SERVICIO : "id_reserva"
+```
+- Todas las claves primarias son `id` autoincremental. `CODIGO_POSTAL` no tiene CRUD (solo alimenta el desplegable de clientes).
+- `RESERVA`: única por (`id_coche`, `dia`, `franja_horaria`); la franja solo admite `MANANA` o `TARDE`.
+- **Tiempo y precio estimados** (`tiempo_calculado`, `precio_calculado`): no se editan nunca a mano. Valen 0 al crear la reserva
+  y se recalculan solos sumando sus servicios cuando se crea, modifica o borra un servicio.
+- Borrado: sin `ON DELETE`, no se puede borrar un registro con hijos y se explica el motivo.
 
 Los nombres de tabla están en MAYÚSCULAS (en Linux, MySQL distingue mayúsculas y minúsculas).
 
@@ -73,11 +90,49 @@ Los nombres de tabla están en MAYÚSCULAS (en Linux, MySQL distingue mayúscula
 
 ```
 talleres-moises-php-app/
-├── sql/
-│   ├── backup.sql
-│   └── backup_sin_create_database.sql
-├── cabecera.html
-└── README.MD
+│   alta_cliente.php
+│   buscar_cliente.php
+│   cabecera.html
+│   config.php
+│   editar_cliente.php
+│   funcionesBD.php
+│   imagen.php
+│   index.php
+│   listado_clientes.php
+│   listado_clientes_filtro.php
+│   pie.html
+│   proceso_alta_cliente.php
+│   proceso_borrar_cliente.php
+│   proceso_buscar_cliente.php
+│   proceso_modificar_cliente.php
+│   README.MD
+│
+├───css
+│       admin.css
+│       style.css
+│
+├───img
+│   ├───favicon
+│   │       favicon.svg
+│   │
+│   └───logo
+│           logo.svg
+│
+├───inc
+│       entidades.php
+│
+├───sql
+│       backup.sql
+│       backup_sin_create_database.sql
+│       seed_data.sql
+│
+└───uploads
+    │   .htaccess
+    │
+    ├───clientes
+    ├───coches
+    ├───reservas
+    └───servicios
 ```
 
 

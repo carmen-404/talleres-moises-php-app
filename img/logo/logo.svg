@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Talleres Moises">
+  <rect width="512" height="512" rx="96" fill="#1B4F9C"/>
+  <path d="M96 400 A160 160 0 0 1 416 400" fill="none" stroke="#ECD816" stroke-width="28"/>
+  <path d="M180 270 L205 215 H307 L332 270 Z" fill="#ffffff"/>
+  <rect x="150" y="270" width="212" height="90" rx="22" fill="#ffffff"/>
+  <circle cx="190" cy="318" r="14" fill="#1B4F9C"/>
+  <circle cx="322" cy="318" r="14" fill="#1B4F9C"/>
+  <text x="256" y="352" text-anchor="middle" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="64" fill="#EC7A2B">TM</text>
+</svg>

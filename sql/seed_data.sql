@@ -1,5 +1,6 @@
 -- =====================================================================
 -- DATOS DE EJEMPLO (más de 10 registros por tabla)
+-- tiempo_calculado / precio_calculado de cada reserva = suma de sus servicios.
 -- =====================================================================
 INSERT INTO `CODIGO_POSTAL` (`id`, `codigo`, `municipio`) VALUES
 (1, '41001', 'Sevilla'),
