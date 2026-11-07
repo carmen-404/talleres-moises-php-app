@@ -1,0 +1,12 @@
+/* Complementa css/style.css */
+.navbar-brand img { height: 64px; border-radius: .75rem; }
+.navbar .nav-link.active { color: var(--bs-secondary) !important; font-weight: 600; }
+body { background: #f4f7fc; }
+
+.tabla-admin { background: #fff; }
+.tabla-admin thead th { background: var(--bs-primary); color: #fff; white-space: nowrap; }
+.celda-larga { max-width: 22rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.miniatura { width: 44px; height: 44px; object-fit: cover; border-radius: .5rem; display: inline-block; }
+.miniatura-vacia { display: inline-flex; align-items: center; justify-content: center; background: #e3ebf7; color: #8aa0c4; }
+.previsualizacion { max-height: 120px; border-radius: .5rem; }

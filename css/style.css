@@ -1,0 +1,62 @@
+/* Estilo base de Talleres Moisés (paleta, botones, tarjetas, navbar).
+   Fuentes genéricas del sistema: no hace falta descargar nada. */
+
+:root {
+  --bs-primary: #1B4F9C;
+  --bs-primary-rgb: 27, 79, 156;
+  --bs-secondary: #ECD816;
+  --bs-secondary-rgb: 236, 216, 22;
+  --bs-info: #531CA1;
+  --bs-info-rgb: 83, 28, 161;
+  --bs-warning: #EC9D16;
+  --bs-warning-rgb: 236, 157, 22;
+  --bs-dark: #0F3A79;
+  --bs-dark-rgb: 15, 58, 121;
+  --bs-body-font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+.btn-secondary {
+  --bs-btn-color: #000;
+  --bs-btn-bg: #ECD816;
+  --bs-btn-border-color: #ECD816;
+  --bs-btn-hover-color: #000;
+  --bs-btn-hover-bg: #d4c014;
+  --bs-btn-hover-border-color: #d4c014;
+  --bs-btn-active-color: #000;
+  --bs-btn-active-bg: #c2af12;
+  --bs-btn-active-border-color: #c2af12;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Arial Narrow", "Roboto Condensed", "Franklin Gothic Medium", Impact, sans-serif;
+  font-weight: 700;
+}
+.navbar, .btn { font-family: "Segoe UI", Montserrat, Arial, sans-serif; }
+
+.navbar { border-bottom: 4px solid var(--bs-secondary); }
+.navbar-brand { padding: 0; }
+.navbar-brand img { height: 100px; }
+
+.footer-link { color: #fff; text-decoration: none; }
+.footer-link:hover { color: var(--bs-secondary); }
+
+.btn-hero {
+  border-radius: 50rem;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.btn-hero:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 .5rem 1rem rgba(15, 58, 121, .25);
+}
+.btn-hero .bi-arrow-right { transition: transform .2s ease; }
+.btn-hero:hover .bi-arrow-right { transform: translateX(4px); }
+
+.text-bg-secondary { color: #000 !important; }
+
+.card-porque { transition: transform .25s ease, box-shadow .25s ease; }
+.card-porque:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 1rem 1.5rem rgba(15, 58, 121, .2) !important;
+}
+.card-porque .bi { display: inline-block; transition: transform .25s ease; }
+.card-porque:hover .bi { transform: scale(1.2) rotate(-8deg); }
