@@ -10,3 +10,11 @@ body { background: #f4f7fc; }
 .miniatura { width: 44px; height: 44px; object-fit: cover; border-radius: .5rem; display: inline-block; }
 .miniatura-vacia { display: inline-flex; align-items: center; justify-content: center; background: #e3ebf7; color: #8aa0c4; }
 .previsualizacion { max-height: 120px; border-radius: .5rem; }
+
+/* Etiquetas de franja horaria (Mañana / Tarde) de "Próximas reservas" y de los listados.
+   Letra blanca (#fff) sobre los colores de la paleta definidos en style.css:
+   - Mañana: naranja (--bs-warning)
+   - Tarde: violeta (--bs-info)
+   No se usan las clases text-bg-warning / text-bg-info de Bootstrap porque fuerzan letra oscura. */
+.badge-manana { background: var(--bs-warning); color: #fff; }
+.badge-tarde { background: var(--bs-info); color: #fff; }
