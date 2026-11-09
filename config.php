@@ -3,7 +3,7 @@
 define('DB_HOST', 'db');
 define('DB_USER', 'root');
 define('DB_PASS', 'test');
-define('DB_NAME', 'talleresMoises');
+define('DB_NAME', 'talleres_moises');
 define('DB_PORT', '3306');
 
 function obtenerConexion() {
