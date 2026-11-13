@@ -76,31 +76,24 @@ CREATE TABLE `CLIENTE` (
 -- Cada coche pertenece a un único cliente.
 -- La matrícula es única.
 -- =====================================================
-CREATE TABLE `COCHE` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `marca` VARCHAR(100) NOT NULL,
-  `modelo` VARCHAR(100) NOT NULL,
-  `matricula` VARCHAR(15) NOT NULL,
-  `anio` INT NOT NULL,
-  `id_cliente` INT NOT NULL,
-  -- atributo para implementar el borrado lógico
-  `deleted_at` DATETIME NULL DEFAULT NULL,
-  `imagen` MEDIUMBLOB NULL, -- imagen del coche (opcional)
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_coche_matricula` (`matricula`),
-
-  -- [ONLY FOR SOFT DELETE] Handle UNIQUE constraint collision (keeping active plates strictly unique)
-  -- Standard approach: Change UNIQUE(matricula) to UNIQUE(matricula, deleted_at)
-  -- MySQL allows multiple NULL values in UNIQUE indexes, so active cars remain strictly unique.
-  -- UNIQUE KEY `uq_coche_matricula_deleted` (`matricula`, `deleted_at`),
-
-  KEY `idx_coche_id_cliente` (`id_cliente`),
-  -- Index para filtrar los coche activos de forma óptima si se usa borrado lógico
-  KEY `idx_coche_deleted_at` (`deleted_at`),
-  -- Ref: COCHE.id_cliente > CLIENTE.id
-  CONSTRAINT `fk_coche_cliente` FOREIGN KEY (`id_cliente`) REFERENCES `CLIENTE` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
+  CREATE TABLE `COCHE` (
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `fecha_entrada` DATE NOT NULL,
+    `reparar` TINYINT(1) NOT NULL DEFAULT 0,
+    `marca` VARCHAR(100) NOT NULL,
+    `modelo` VARCHAR(100) NOT NULL,
+    `matricula` VARCHAR(15) NOT NULL,
+    `anio` INT NOT NULL,
+    `id_cliente` INT DEFAULT NULL,
+    `deleted_at` DATETIME DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uq_coche_matricula` (`matricula`),
+    KEY `idx_coche_id_cliente` (`id_cliente`),
+    -- Index para filtrar los coche activos de forma óptima si se usa borrado lógico
+    KEY `idx_coche_deleted_at` (`deleted_at`),
+    -- Ref: COCHE.id_cliente > CLIENTE.id
+    CONSTRAINT `fk_coche_cliente` FOREIGN KEY (`id_cliente`) REFERENCES `CLIENTE` (`id`) ON DELETE SET NULL
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
 -- RESERVA (CARMEN DÍAZ)
