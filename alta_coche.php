@@ -111,7 +111,7 @@ include_once("cabecera.html");
                     type="reset"
                     class="btn btn-outline-danger btn-lg btn-hero px-4 fw-semibold w-100">
                     <i class="bi bi-arrow-counterclockwise me-1" aria-hidden="true"></i>
-                    Reset
+                    Reiniciar
                 </button>
             </div>
         </div>
