@@ -2,17 +2,66 @@
 require_once("config.php");
 
 $conexion = obtenerConexion();
+$mensaje = "";
+$tipoAlerta = "";
 
-// Sin filtrar por deleted_at: independiente del tipo de borrado de COCHE
-$sql = "SELECT c.id, c.matricula, c.marca, c.modelo, cl.email
+// Procesar el alta si se ha enviado el formulario
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $idCoche    = intval($_POST['lstCoche']);
+    $dia        = mysqli_real_escape_string($conexion, $_POST['txtDia']);
+    $franja     = mysqli_real_escape_string($conexion, $_POST['lstFranja']);
+    $prioridad  = intval($_POST['lstPrioridad']);
+    $confirmada = isset($_POST['chkConfirmada']) ? 1 : 0;
+
+    // 1. Obtener snapshots de matrícula y email desde COCHE y CLIENTE
+    $sqlSnapshot = "SELECT c.matricula, cl.email 
+                    FROM COCHE c 
+                    INNER JOIN CLIENTE cl ON c.id_cliente = cl.id 
+                    WHERE c.id = $idCoche;";
+    $resSnapshot  = mysqli_query($conexion, $sqlSnapshot);
+    $filaSnapshot = mysqli_fetch_assoc($resSnapshot);
+
+    if (!$filaSnapshot) {
+        $tipoAlerta = "danger";
+        $mensaje = "Error: El vehículo o cliente seleccionado ya no existe.";
+    } else {
+        $snapshotMatricula = mysqli_real_escape_string($conexion, $filaSnapshot['matricula']);
+        $snapshotEmail     = mysqli_real_escape_string($conexion, $filaSnapshot['email']);
+
+        // 2. Insertar la reserva
+        $sqlInsert = "INSERT INTO `RESERVA` (`id`, `dia`, `franja_horaria`, `id_coche`, `snapshot_cliente_email`, `snapshot_coche_matricula`, `prioridad_reserva`, `esta_confirmada`) 
+                      VALUES (NULL, '$dia', '$franja', $idCoche, '$snapshotEmail', '$snapshotMatricula', $prioridad, $confirmada);";
+
+        try {
+            $resultado = mysqli_query($conexion, $sqlInsert);
+            if ($resultado) {
+                $tipoAlerta = "success";
+                $mensaje = "Reserva registrada correctamente.";
+            } else {
+                $tipoAlerta = "danger";
+                $mensaje = (mysqli_errno($conexion) == 1062)
+                    ? "Ya existe una reserva para ese vehículo en ese día y franja horaria."
+                    : "Error al registrar la reserva: " . mysqli_error($conexion);
+            }
+        } catch (mysqli_sql_exception $e) {
+            $tipoAlerta = "danger";
+            $mensaje = ($e->getCode() == 1062)
+                ? "Ya existe una reserva para ese vehículo en ese día y franja horaria."
+                : "Error al registrar la reserva: " . $e->getMessage();
+        }
+    }
+}
+
+// Cargar desplegable de matrículas (solo columnas mínimas: c.id, c.matricula, cl.email)
+$sql = "SELECT c.id, c.matricula, cl.email
         FROM COCHE c
         INNER JOIN CLIENTE cl ON c.id_cliente = cl.id
         ORDER BY c.matricula ASC;";
 
-$resultado = mysqli_query($conexion, $sql);
+$resultadoCoches = mysqli_query($conexion, $sql);
 
 $options = "";
-while ($fila = mysqli_fetch_assoc($resultado)) {
+while ($fila = mysqli_fetch_assoc($resultadoCoches)) {
     $textoOpcion = htmlspecialchars($fila["matricula"] . " - " . $fila["email"]);
     $options .= " <option value='" . $fila["id"] . "'>" . $textoOpcion . "</option>";
 }
@@ -27,10 +76,14 @@ include_once("cabecera.html");
         <span>Alta de reserva</span>
     </h2>
 
-    <form action="proceso_alta_reserva.php" name="frmAltaReserva" id="frmAltaReserva" method="post">
-        <fieldset>
-            <legend class="mb-3">Alta de reserva</legend>
+    <?php if ($mensaje !== ""): ?>
+        <div class="alert alert-<?php echo $tipoAlerta; ?> mb-4" role="alert">
+            <?php echo htmlspecialchars($mensaje); ?>
+        </div>
+    <?php endif; ?>
 
+    <form action="alta_reserva.php" name="frmAltaReserva" id="frmAltaReserva" method="post">
+        <fieldset>
             <div class="row g-3">
                 <!-- Columna Izquierda -->
                 <div class="col-12 col-lg-6">
@@ -103,7 +156,7 @@ include_once("cabecera.html");
                         type="reset"
                         class="btn btn-outline-danger btn-lg btn-hero px-4 fw-semibold w-100">
                         <i class="bi bi-arrow-counterclockwise me-1" aria-hidden="true"></i>
-                        Reset
+                        Limpiar
                     </button>
                 </div>
             </div>
