@@ -53,21 +53,21 @@ INSERT INTO `CLIENTE` (`id`, `nombre_completo`, `telefono`, `email`, `id_cp`, `d
 (12, 'Ana Belén Cruz Soto', '620212223', 'anabelen.cruz@example.com', 12, '2026-10-15 11:30:00');
 
 -- 3. COCHE
-INSERT INTO `COCHE` (`id`, `marca`, `modelo`, `matricula`, `anio`, `id_cliente`, `deleted_at`) VALUES
-(1, 'Seat', 'León', '4521KJH', 2018, 1, NULL),
-(2, 'Renault', 'Clio', '7733LMN', 2020, 2, NULL),
-(3, 'Volkswagen', 'Golf', '1289GTR', 2015, 3, NULL),
-(4, 'Ford', 'Focus', '9087HBC', 2017, 4, NULL),
-(5, 'Toyota', 'Corolla', '3345MPR', 2021, 5, NULL),
-(6, 'Peugeot', '208', '6612KLD', 2019, 6, NULL),
-(7, 'Citroën', 'C3', '2290JRT', 2016, 7, NULL),
-(8, 'Opel', 'Corsa', '8854LCV', 2022, 8, NULL),
-(9, 'Seat', 'Ibiza', '5501HNM', 2014, 9, NULL),
-(10, 'Dacia', 'Sandero', '7788MZX', 2023, 10, NULL),
-(11, 'BMW', 'Serie 1', '1024KFG', 2019, 11, NULL),
-(12, 'Audi', 'A3', '6639LBN', 2020, 12, '2026-10-15 11:30:00'),
-(13, 'Seat', 'Arona', '4410MKT', 2021, 1, NULL),
-(14, 'Renault', 'Megane', '2877HJP', 2013, 3, NULL);
+INSERT INTO `COCHE` (`id`, `fecha_entrada`, `reparar`, `marca`, `modelo`, `matricula`, `anio`, `id_cliente`, `deleted_at`) VALUES
+(1,  '2026-11-02', 0, 'Seat',       'León',    '4521KJH', 2018, 1,  NULL),
+(2,  '2026-11-03', 0, 'Renault',    'Clio',    '7733LMN', 2020, 2,  NULL),
+(3,  '2026-11-04', 1, 'Volkswagen', 'Golf',    '1289GTR', 2015, 3,  NULL),
+(4,  '2026-11-04', 1, 'Ford',       'Focus',   '9087HBC', 2017, 4,  NULL),
+(5,  '2026-11-05', 0, 'Toyota',     'Corolla', '3345MPR', 2021, 5,  NULL),
+(6,  '2026-11-05', 0, 'Peugeot',    '208',     '6612KLD', 2019, 6,  NULL),
+(7,  '2026-11-06', 0, 'Citroën',    'C3',      '2290JRT', 2016, 7,  NULL),
+(8,  '2026-11-06', 0, 'Opel',       'Corsa',   '8854LCV', 2022, 8,  NULL),
+(9,  '2026-11-09', 1, 'Seat',       'Ibiza',   '5501HNM', 2014, 9,  NULL),
+(10, '2026-11-09', 0, 'Dacia',      'Sandero', '7788MZX', 2023, 10, NULL),
+(11, '2026-11-10', 1, 'BMW',        'Serie 1', '1024KFG', 2019, 11, NULL),
+(12, '2026-10-05', 0, 'Audi',       'A3',      '6639LBN', 2020, 12, '2026-10-15 11:30:00'),
+(13, '2026-11-12', 0, 'Seat',       'Arona',   '4410MKT', 2021, 1,  NULL),
+(14, '2026-11-12', 1, 'Renault',    'Megane',  '2877HJP', 2013, 3,  NULL);
 
 -- 4. RESERVA
 INSERT INTO `RESERVA` (`id`, `dia`, `franja_horaria`, `id_coche`, `snapshot_cliente_email`, `snapshot_coche_matricula`, `prioridad_reserva`, `esta_confirmada`) VALUES
