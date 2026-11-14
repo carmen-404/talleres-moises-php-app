@@ -1,4 +1,23 @@
-# Las imágenes subidas nunca se ejecutan como código
+# uploads/.htaccess
+# ---------------------------------------------------------------
+# Esta carpeta guarda los ficheros que suben los usuarios (imágenes de clientes, coches, reservas y servicios).
+# Todo lo que sube un usuario es contenido NO confiable: si alguien consiguiera
+# guardar aquí un .php, Apache lo ejecutaría al visitarlo y tendría control del servidor.
+#
+# La aplicación ya lo evita (comprueba que sea una imagen y la regenera con GD),
+# pero este fichero es una segunda barrera a nivel de servidor: aquí NUNCA se
+# ejecuta código PHP, solo se sirven imágenes.
+#
+# Es independiente de la lógica de la aplicación: en una aplicación solo PHP,
+# sin JavaScript, la protección tiene que estar en el servidor, no en el navegador.
+# ---------------------------------------------------------------
+
+# Intercepta cualquier petición a archivos cuya extensión termine ($) en:
+# - .php   (scripts PHP estándar)
+# - .phtml (plantillas HTML con código PHP embebido)
+# - .phar  (archivos empaquetados de PHP ejecutables)
 <FilesMatch "\.(php|phtml|phar)$">
-  Require all denied
+    # Directiva de Apache 2.4+: rechaza inmediatamente cualquier petición (HTTP 403 Forbidden)
+    # impidiendo tanto su lectura como su ejecución por el intérprete de PHP.
+    Require all denied
 </FilesMatch>

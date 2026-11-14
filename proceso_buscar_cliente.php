@@ -1,5 +1,5 @@
 <?php
-require_once("funcionesBD.php");
+require_once("config.php");
 $conexion = obtenerConexion();
 
 $nombre_cliente = isset($_GET['txtNombreCliente']) ? trim($_GET['txtNombreCliente']) : "";

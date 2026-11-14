@@ -1,5 +1,6 @@
 <?php
-require_once("funcionesBD.php");
+require_once("config.php");
+
 $conexion = obtenerConexion();
 
 $sql = "SELECT c.*, p.provincia AS provinciadesc FROM cliente c LEFT JOIN provincias p ON c.idprovincia = p.idprovincia ORDER BY c.idcliente ASC;";

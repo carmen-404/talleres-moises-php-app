@@ -1,3 +1,3 @@
 <?php
-require_once("funcionesBD.php");
-procesarGuardado("clientes", "modificar");
+require_once("config.php");
+

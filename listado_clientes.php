@@ -1,5 +1,5 @@
 <?php
-require_once("funcionesBD.php");
+require_once("config.php");
 mostrarListado("clientes");
 
 $conexion = obtenerConexion();
