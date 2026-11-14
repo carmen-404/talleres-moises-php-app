@@ -1,3 +1,2 @@
 <?php
-require_once("funcionesBD.php");
-mostrarListado("clientes");
+require_once("config.php");

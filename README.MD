@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="img/logo/logo.webp" alt="Logo de Talleres Moises" width="420">
+  <img src="img/logo/logo.svg" alt="Logo de Talleres Moises" width="420">
 </p>
 
 <h1 align="center">Talleres Moises · Aplicación PHP</h1>
@@ -31,49 +31,99 @@ La primera parte (web corporativa estática) está en el repositorio [Talleres-M
 ## Enlaces
 
 - 💻 **Repositorio GitHub:** [talleres-moises-php-app](https://github.com/carmen-404/talleres-moises-php-app)
-- 🌐 **Alojamiento web:** <!-- TODO: pegar aquí la URL del hosting --> https://PENDIENTE
+- 🌐 **Alojamiento web:** [talleres-moises-php-app.free.je](https://talleres-moises-php-app.free.je)
 
 ## Conexión a la base de datos (`config.php`)
 
 | Parámetro | Valor |
-|---|---|
+| :--- | :--- |
 | Servidor | `db` |
 | Puerto | `3306` |
-| Base de datos | `talleresMoises` |
+| Base de datos | `talleres_moises` |
 | Usuario | `root` |
 | Password | `test` |
 
 > Los scripts SQL están en la carpeta `sql/`:
-> - `backup.sql`: crea la base de datos `talleresMoises`, las tablas, relaciones y datos.
+> - `backup.sql`: crea la base de datos `talleres_moises`, las tablas, relaciones y datos.
 > - `backup_sin_create_database.sql`: igual, pero sin `CREATE DATABASE` (para hostings donde la base de datos ya viene creada).
 
 ## Puesta en marcha
-1. Copiar la carpeta en `www/` (docker-lamp) y abrir `http://localhost/talleres-moises-crud-php/`.
+
+1. Copiar la carpeta en `www/` (docker-lamp) y abrir `http://localhost/talleres-moises-php-app/`.
 2. Importar `sql/backup.sql` (crea BD, tablas, relaciones y datos). Si la BD ya existe: `sql/backup_sin_create_database.sql`.
-3. Requiere PHP 7.4+ con mysqli y MySQL 8.0.16+ / MariaDB 10.2.1+ (restricción `CHECK` de `franja_horaria`).
-4. Las imágenes se guardan en la BD (columna `imagen`, BLOB): máximo 2 MB (límite por defecto de `upload_max_filesize`)
+3. Requiere PHP 8.0+ con `mysqli` (y extensión `gd` para imágenes) y MySQL 8.0.16+ / MariaDB 10.2.1+ (restricción `CHECK` de `franja_horaria`).
+4. Para que PHP conecte con la base de datos debe usarse el archivo `config.php` (no `funcionesDB.php`).
 
 ### Entidades (modelo relacional)
 
 ```mermaid
 erDiagram
+  CODIGO_POSTAL {
+    int id PK
+    varchar codigo UK
+    varchar municipio UK
+  }
+
+  CLIENTE {
+    int id PK
+    varchar nombre_completo
+    varchar telefono
+    varchar email UK
+    int id_cp FK
+    datetime deleted_at
+    mediumblob imagen
+  }
+
+  COCHE {
+    int id PK
+    varchar marca
+    varchar modelo
+    varchar matricula UK
+    int anio
+    int id_cliente FK
+    datetime deleted_at
+    mediumblob imagen
+  }
+
+  RESERVA {
+    int id PK
+    date dia UK
+    varchar franja_horaria UK
+    int id_coche FK, UK
+    varchar snapshot_cliente_email
+    varchar snapshot_coche_matricula
+    int prioridad_reserva
+    boolean esta_confirmada
+  }
+
+  SERVICIO {
+    int id PK
+    text descripcion
+    int tiempo_estimado
+    varchar garantia
+    decimal precio_base
+    int id_reserva FK
+    mediumblob imagen
+  }
+
   CODIGO_POSTAL ||--o{ CLIENTE : "id_cp"
   CLIENTE ||--o{ COCHE : "id_cliente"
-  COCHE ||--o{ RESERVA : "id_coche"
+  COCHE |o--o{ RESERVA : "id_coche"
   RESERVA ||--o{ SERVICIO : "id_reserva"
 ```
-- Todas las claves primarias son `id` autoincremental. `CODIGO_POSTAL` no tiene CRUD (solo alimenta el desplegable de clientes).
-- `RESERVA`: única por (`id_coche`, `dia`, `franja_horaria`); la franja solo admite `MANANA` o `TARDE`.
-- **Tiempo y precio estimados** (`tiempo_calculado`, `precio_calculado`): no se editan nunca a mano. Valen 0 al crear la reserva
-  y se recalculan solos sumando sus servicios cuando se crea, modifica o borra un servicio.
-- Borrado: sin `ON DELETE`, no se puede borrar un registro con hijos y se explica el motivo.
 
-Los nombres de tabla están en MAYÚSCULAS (en Linux, MySQL distingue mayúsculas y minúsculas).
+- Todas las claves primarias son `id` autoincremental. `CODIGO_POSTAL` no tiene CRUD (solo alimenta el desplegable de clientes).
+- `RESERVA`: única por (`id_coche`, `dia`, `franja_horaria`); la franja solo admite `MANANA` o `TARDE` y la prioridad va de `1` (mayor) a `4` (menor).
+- **Tiempo y precio estimados**: no existen como columnas persistidas en `RESERVA`; se calculan dinámicamente sumando `tiempo_estimado` (minutos) y `precio_base` (€) de sus `SERVICIO` asociados.
+- **Borrado e integridad**:
+  - `CLIENTE` y `COCHE`: implementan borrado lógico (`deleted_at`). A nivel de BD, sus claves foráneas (`RESTRICT`) impiden el borrado físico si tienen hijos.
+  - `RESERVA`: sin borrado lógico; mantiene los datos históricos con campos *snapshot* (`snapshot_cliente_email`, `snapshot_coche_matricula`) y `ON DELETE SET NULL` en `id_coche`.
+  - `SERVICIO`: dependencia existencial con `RESERVA` (`ON DELETE CASCADE` al borrar una reserva).
 
 ## Reparto de responsabilidades
 
 | Alumno | Entidad responsable |
-|--------|---------------------|
+| :--- | :--- |
 | Carmen | `Reserva` |
 | Moises | `Servicios` |
 | Jose Manuel | `Coche` |
@@ -88,19 +138,19 @@ Los nombres de tabla están en MAYÚSCULAS (en Linux, MySQL distingue mayúscula
 
 ## Estructura del proyecto
 
-```
-talleres-moises-php-app/
+```text
+talleres-moises-php-app
 │   alta_cliente.php
+│   alta_reserva.php
 │   buscar_cliente.php
 │   cabecera.html
 │   config.php
 │   editar_cliente.php
-│   funcionesBD.php
-│   imagen.php
 │   index.php
 │   listado_clientes.php
 │   listado_clientes_filtro.php
 │   pie.html
+│   procceso_alta_reserva.php
 │   proceso_alta_cliente.php
 │   proceso_borrar_cliente.php
 │   proceso_buscar_cliente.php
@@ -118,9 +168,6 @@ talleres-moises-php-app/
 │   └───logo
 │           logo.svg
 │
-├───inc
-│       entidades.php
-│
 ├───sql
 │       backup.sql
 │       backup_sin_create_database.sql
@@ -135,10 +182,10 @@ talleres-moises-php-app/
     └───servicios
 ```
 
-
+> **Seguridad en `uploads/.htaccess`:** Bloquea mediante Apache (`Require all denied`) la ejecución y el acceso a archivos `.php`, `.phtml` y `.phar` dentro del directorio de subidas, actuando como segunda barrera en el servidor además de la validación de imágenes con GD en PHP.
 
 ## Requisitos
 
-- PHP 8.0 o superior
+- PHP 8.0 o superior (extensiones `mysqli` y `gd`)
 - MySQL 8.0.16+ o MariaDB 10.2.1+
 - Servidor web Apache

@@ -1,3 +1,2 @@
 <?php
-require_once("funcionesBD.php");
-procesarBuscar("clientes");
+require_once("config.php");
