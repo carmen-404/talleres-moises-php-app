@@ -47,58 +47,27 @@ require_once("config.php");
                             <li><a class="dropdown-item" href="listado_clientes_filtro.php"><i class="bi bi-funnel me-2"></i>Listado filtrado de clientes</a></li>
                         </ul>
                     </li>
+require_once("funcionesBD.php");
 
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-car-front-fill"></i> Coches
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="alta_coche.php"><i class="bi bi-plus-circle me-2"></i>Alta de coches</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="buscar_coche.php"><i class="bi bi-search me-2"></i>Buscar un coche</a></li>
-                            <li><a class="dropdown-item" href="listado_coches.php"><i class="bi bi-list-ul me-2"></i>Listado de coches</a></li>
-                            <li><a class="dropdown-item" href="listado_coches_filtro.php"><i class="bi bi-funnel me-2"></i>Listado filtrado de coches</a></li>
-                        </ul>
-                    </li>
+include_once("cabecera.html");
+?>
 
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-calendar-check"></i> Reservas
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="alta_reserva.php"><i class="bi bi-plus-circle me-2"></i>Alta de reservas</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="buscar_reserva.php"><i class="bi bi-search me-2"></i>Buscar una reserva</a></li>
-                            <li><a class="dropdown-item" href="listado_reservas.php"><i class="bi bi-list-ul me-2"></i>Listado de reservas</a></li>
-                            <li><a class="dropdown-item" href="listado_reservas_filtro.php"><i class="bi bi-funnel me-2"></i>Listado filtrado de reservas</a></li>
-                        </ul>
-                    </li>
-
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-wrench-adjustable"></i> Servicios
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="alta_servicio.php"><i class="bi bi-plus-circle me-2"></i>Alta de servicios</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="buscar_servicio.php"><i class="bi bi-search me-2"></i>Buscar un servicio</a></li>
-                            <li><a class="dropdown-item" href="listado_servicios.php"><i class="bi bi-list-ul me-2"></i>Listado de servicios</a></li>
-                            <li><a class="dropdown-item" href="listado_servicios_filtro.php"><i class="bi bi-funnel me-2"></i>Listado filtrado de servicios</a></li>
-                        </ul>
-                    </li>
-                </ul>
-
-                <a class="btn btn-secondary ms-lg-3 d-none d-lg-inline-block" href="alta_reserva.php">Nueva reserva</a>
-            </div>
-        </div>
-    </nav>
-
-<div class="container" id="formularios">
-    <div class="row mt-4">
-        <?php
-        // Aquí ejecutas la función que genera dinámicamente el buscador adaptado a clientes
-        mostrarBuscar("clientes");
-        ?>
+<div class="container d-flex justify-content-center align-items-center mt-5">
+    <div class="card shadow-sm p-4 w-100" style="max-width: 500px;">
+        <form action="proceso_buscar_cliente.php" name="frmBuscarCliente" id="frmBuscarCliente" method="get">
+            <fieldset>
+                <legend class="mb-4 text-center fw-bold text-primary">Buscar un cliente</legend>
+                
+                <div class="mb-4">
+                    <label class="form-label fw-semibold" for="txtNombreCliente">Nombre</label>
+                    <input id="txtNombreCliente" name="txtNombreCliente" placeholder="Nombre del cliente" class="form-control" type="text" required>
+                </div>
+                
+                <div class="d-grid">
+                    <input type="submit" id="btnAceptarBuscarCliente" name="btnAceptarBuscarCliente" class="btn btn-primary btn-block" value="Aceptar" />
+                </div>
+            </fieldset>
+        </form>
     </div>
 </div>
 
