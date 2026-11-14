@@ -13,7 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $prioridad  = intval($_POST['lstPrioridad']);
     $confirmada = isset($_POST['chkConfirmada']) ? 1 : 0;
 
-    // 1. Obtener snapshots de matrícula y email desde COCHE y CLIENTE..
+    // 1. Obtener snapshots de matrícula y email desde COCHE y CLIENTE
     $sqlSnapshot = "SELECT c.matricula, cl.email 
                     FROM COCHE c 
                     INNER JOIN CLIENTE cl ON c.id_cliente = cl.id 
