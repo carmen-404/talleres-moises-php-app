@@ -60,3 +60,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 .card-porque .bi { display: inline-block; transition: transform .25s ease; }
 .card-porque:hover .bi { transform: scale(1.2) rotate(-8deg); }
+
+body { min-height: 100vh; display: flex; flex-direction: column; }
+/* El contenido ocupa todo el alto libre: así el pie queda abajo aunque haya poco contenido */
+body > .container, body > main { flex: 1 0 auto; }

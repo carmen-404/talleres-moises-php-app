@@ -46,12 +46,11 @@ cerrarConexion($conexion);
 // Cabecera HTML que incluye navbar
 include_once("cabecera.html");
 ?>
-
   <main class="container py-4">
     <?php if ($error != "") { ?>
       <div class="alert alert-danger">Error de base de datos: <?php echo htmlspecialchars($error); ?> ¿Has importado sql/backup.sql?</div>
     <?php } ?>
-
+    
     <h1 class="h2 text-primary mb-4"><i class="bi bi-house-fill me-2"></i>Panel de gestión</h1>
 
     <div class="row row-cols-2 row-cols-lg-4 g-3 mb-4">
