@@ -19,7 +19,7 @@ $proximas = consultar($conexion, "SELECT r.id, r.dia, r.franja_horaria, co.matri
 include_once("cabecera.html");
 ?>
 
-  <main class="container py-4">
+  <main class="container pt-4 pb-0">
     <?php echo flashHTML(); ?>
     <?php if ($errorBD !== "") { echo alertaHTML("danger", "Error de base de datos: " . $errorBD . " ¿Has importado sql/backup.sql?"); } ?>
 
