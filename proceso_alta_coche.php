@@ -4,11 +4,11 @@ require_once("config.php");
 $conexion = obtenerConexion();
 
 // Recoger los datos del formulario
-$marca = mysqli_real_escape_string($conexion, $_POST["txtMarca"]);
-$modelo = mysqli_real_escape_string($conexion, $_POST["txtModelo"]);
-$matricula = mysqli_real_escape_string($conexion, $_POST["txtMatricula"]);
+$marca = $_POST["txtMarca"];
+$modelo = $_POST["txtModelo"];
+$matricula = $_POST["txtMatricula"];
 $anio = intval($_POST["txtAnio"]);
-$fechaEntrada = mysqli_real_escape_string($conexion, $_POST["txtFechaEntrada"]);
+$fechaEntrada = $_POST["txtFechaEntrada"];
 $idCliente = intval($_POST["lstCliente"]);
 $reparar = isset($_POST["chkReparar"]) ? 1 : 0;
 

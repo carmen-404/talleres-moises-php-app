@@ -48,7 +48,10 @@ while ($fila = mysqli_fetch_assoc($resultado)) {
     $filas .= "<td>" . $cliente . "</td>";
     $filas .= "<td>";
     $filas .= "<a href='editar_coche.php?id=" . $fila["id"] . "' class='btn btn-sm btn-outline-primary me-1'><i class='bi bi-pencil'></i></a>";
-    $filas .= "<a href='proceso_borrar_coche.php?id=" . $fila["id"] . "' class='btn btn-sm btn-outline-danger' onclick=\"return confirm('¿Seguro que quieres borrar este coche?');\"><i class='bi bi-trash'></i></a>";
+    $filas .= "<form class='d-inline' action='proceso_borrar_coche.php' method='post' onsubmit=\"return confirm('¿Seguro que quieres borrar este coche?');\">";
+    $filas .= "<input type='hidden' name='id' value='" . $fila["id"] . "'>";
+    $filas .= "<button type='submit' class='btn btn-sm btn-outline-danger'><i class='bi bi-trash'></i></button>";
+    $filas .= "</form>";
     $filas .= "</td>";
     $filas .= "</tr>";
 }
@@ -57,7 +60,7 @@ while ($fila = mysqli_fetch_assoc($resultado)) {
 include_once("cabecera.html");
 ?>
 
-<div class="container mt-4" id="listados">
+<div class="container mt-4 mb-5" id="listados">
     <h2 class="text-primary fw-normal mb-4 d-flex align-items-center gap-2">
         <i class="bi bi-car-front" aria-hidden="true"></i>
         <span>Listado de coches</span>
@@ -89,6 +92,5 @@ include_once("cabecera.html");
         Nuevo coche
     </a>
 </div>
-</body>
+<?php include_once("pie.html"); ?>
 
-</html>

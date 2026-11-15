@@ -1,10 +1,10 @@
 <?php
 require_once("config.php");
 
-// Recoger el id de la URL
+// Recoger el id enviado por el formulario (POST)
 $id = 0;
-if (isset($_GET["id"])) {
-    $id = intval($_GET["id"]);
+if (isset($_POST["id"])) {
+    $id = intval($_POST["id"]);
 }
 
 // Si no hay un id válido, volver al listado

@@ -171,6 +171,5 @@ include_once("cabecera.html");
         </div>
     </form>
 </div>
-</body>
+<?php include_once("pie.html"); ?>
 
-</html>
