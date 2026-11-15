@@ -1,7 +1,7 @@
 <?php
 $cliente = json_decode($_POST['cliente'], true);
 
-require_once("funcionesBD.php");
+require_once("config.php");
 $conexion = obtenerConexion();
 
 $sql = "SELECT idprovincia, provincia FROM provincias;";
