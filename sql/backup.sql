@@ -152,11 +152,13 @@ CREATE TABLE `RESERVA` (
 -- =====================================================
 CREATE TABLE `SERVICIO` (
   `id` INT NOT NULL AUTO_INCREMENT,
+  `fecha` DATE NOT NULL,
   `descripcion` TEXT NOT NULL,
   `tiempo_estimado` INT NOT NULL,
   `garantia` VARCHAR(255) NULL,
   `precio_base` DECIMAL(10,2) NOT NULL,
   `id_reserva` INT NOT NULL,
+  `terminada` BOOLEAN,
   `imagen` MEDIUMBLOB NULL, -- Imagen opcional del servicio
 
   -- El orden no se puede modificar aquí: siguen la clave primaria, índices y clave foránea.
