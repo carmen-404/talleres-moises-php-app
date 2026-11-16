@@ -86,19 +86,19 @@ INSERT INTO `RESERVA` (`id`, `dia`, `franja_horaria`, `id_coche`, `snapshot_clie
 (13, '2026-11-16', 'TARDE',  13, 'antonio.garcia@example.com',   '4410MKT', 4, FALSE);
 
 -- 5. SERVICIO
-INSERT INTO `SERVICIO` (`id`, `descripcion`, `tiempo_estimado`, `garantia`, `precio_base`, `id_reserva`) VALUES
-(1,  'Cambio de aceite y filtro',              45,  '6 meses',            65.00,  1),
-(2,  'Revisión de frenos',                     60,  '1 año',              40.00,  1),
-(3,  'Sustitución de batería',                 30,  '2 años',             85.00,  2),
-(4,  'Cambio de kit de distribución',          240, '2 años',             420.00, 3),
-(5,  'Diagnosis electrónica',                  60,  NULL,                 45.00,  4),
-(6,  'Cambio de bujías',                       50,  '1 año',              60.00,  4),
-(7,  'Alineación y equilibrado de ruedas',     60,  '6 meses',            55.00,  5),
-(8,  'Cambio de dos neumáticos',               40,  'Oficial fabricante', 140.00, 6),
-(9,  'Revisión pre-ITV',                       45,  NULL,                 30.00,  7),
-(10, 'Recarga de aire acondicionado',          60,  '1 año',              75.00,  8),
-(11, 'Cambio de embrague',                     300, '2 años',             650.00, 9),
-(12, 'Mantenimiento oficial 10.000 km',        90,  '1 año',              120.00, 10),
-(13, 'Cambio de pastillas y discos delanteros', 90,  '2 años',             180.00, 11),
-(14, 'Reparación de la suspensión',            120, '1 año',              260.00, 12),
-(15, 'Limpieza de inyectores',                 60,  NULL,                 70.00,  13);
+INSERT INTO `SERVICIO` (`id`, `fecha`, `descripcion`, `tiempo_estimado`, `garantia`, `precio_base`, `id_reserva`, `terminada`, `imagen`) VALUES
+(1,  '2026-10-01', 'Cambio de aceite y filtro',               45,  '6 meses',            65.00,  1,  1, NULL),
+(2,  '2026-10-01', 'Revisión de frenos',                      60,  '1 año',              40.00,  1,  1, NULL),
+(3,  '2026-10-03', 'Sustitución de batería',                  30,  '2 años',             85.00,  2,  1, NULL),
+(4,  '2026-10-05', 'Cambio de kit de distribución',           240, '2 años',             420.00, 3,  1, NULL),
+(5,  '2026-10-07', 'Diagnosis electrónica',                   60,  NULL,                 45.00,  4,  1, NULL),
+(6,  '2026-10-07', 'Cambio de bujías',                        50,  '1 año',              60.00,  4,  1, NULL),
+(7,  '2026-10-10', 'Alineación y equilibrado de ruedas',      60,  '6 meses',            55.00,  5,  1, NULL),
+(8,  '2026-10-12', 'Cambio de dos neumáticos',                40,  'Oficial fabricante', 140.00, 6,  1, NULL),
+(9,  '2026-10-14', 'Revisión pre-ITV',                        45,  NULL,                 30.00,  7,  1, NULL),
+(10, '2026-10-16', 'Recarga de aire acondicionado',           60,  '1 año',              75.00,  8,  1, NULL),
+(11, '2026-10-18', 'Cambio de embrague',                      300, '2 años',             650.00, 9,  0, NULL),
+(12, '2026-10-20', 'Mantenimiento oficial 10.000 km',         90,  '1 año',              120.00, 10, 0, NULL),
+(13, '2026-10-22', 'Cambio de pastillas y discos delanteros', 90,  '2 años',             180.00, 11, 0, NULL),
+(14, '2026-10-25', 'Reparación de la suspensión',             120, '1 año',              260.00, 12, 0, NULL),
+(15, '2026-10-28', 'Limpieza de inyectores',                  60,  NULL,                 70.00,  13, 0, NULL);
