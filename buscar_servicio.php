@@ -3,10 +3,13 @@ require_once("config.php");
 
 $conexion = obtenerConexion();
 
+$idSeleccionado = isset($_POST["id_servicio"]) ? (int)$_POST["id_servicio"] : 0;
+
 $sql = "SELECT id,
+               DATE_FORMAT(fecha, '%d/%m/%Y') AS fecha_formateada,
                descripcion
         FROM SERVICIO
-        ORDER BY id";
+        ORDER BY id DESC";
 
 $resultado = mysqli_query($conexion, $sql);
 $hayServicios = ($resultado && mysqli_num_rows($resultado) > 0);
@@ -14,8 +17,9 @@ $hayServicios = ($resultado && mysqli_num_rows($resultado) > 0);
 $optionsServicios = "";
 if ($hayServicios) {
     while ($fila = mysqli_fetch_assoc($resultado)) {
-        $texto = "#" . $fila["id"] . " · " . $fila["descripcion"];
-        $optionsServicios .= "<option value='" . (int)$fila["id"] . "'>" . htmlspecialchars($texto) . "</option>";
+        $texto = "#" . $fila["id"] . " · " . $fila["fecha_formateada"] . " · " . $fila["descripcion"];
+        $selected = ((int)$fila["id"] === $idSeleccionado) ? "selected" : "";
+        $optionsServicios .= "<option value='" . (int)$fila["id"] . "' $selected>" . htmlspecialchars($texto) . "</option>";
     }
 }
 
@@ -27,7 +31,7 @@ include_once("cabecera.html");
 <div class="container mt-4" id="formularios">
     <h2 class="text-primary fw-normal mb-4 d-flex align-items-center gap-2">
         <i class="bi bi-wrench-adjustable" aria-hidden="true"></i>
-        <span>Burcar por servicio</span>
+        <span>Buscar por servicio</span>
     </h2>
 
     <?php if (!$hayServicios): ?>
@@ -40,8 +44,9 @@ include_once("cabecera.html");
             <fieldset>
                 <div class="row g-2 align-items-end">
                     <div class="col-12 col-md-7 col-lg-6">
+                        <label for="id_servicio" class="form-label mb-1">Seleccione el servicio</label>
                         <select name="id_servicio" id="id_servicio" class="form-select" required>
-                            <option value="" selected disabled>-- Seleccione servicio --</option>
+                            <option value="" <?php echo ($idSeleccionado === 0) ? "selected" : ""; ?> disabled>-- Seleccione servicio --</option>
                             <?php echo $optionsServicios; ?>
                         </select>
                     </div>
