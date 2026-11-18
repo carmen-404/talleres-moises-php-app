@@ -1,15 +1,22 @@
 <?php
+if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+    header("Location: alta_servicio.php");
+    exit;
+}
+
 require_once("config.php");
 
 $conexion = obtenerConexion();
 
-$esEdicion = (isset($_POST["id_servicio"]) && $_POST["id_servicio"] != "");
+$esEdicion  = (isset($_POST["id_servicio"]) && $_POST["id_servicio"] != "");
 $idServicio = $esEdicion ? (int)$_POST["id_servicio"] : 0;
 
 $idReserva      = (int)$_POST["id_reserva"];
+$fecha          = mysqli_real_escape_string($conexion, trim($_POST["fecha"]));
 $descripcion    = mysqli_real_escape_string($conexion, trim($_POST["descripcion"]));
 $tiempoEstimado = (int)$_POST["tiempo_estimado"];
 $precioBase     = (float)$_POST["precio_base"];
+$terminada      = isset($_POST["terminada"]) ? 1 : 0;
 
 if (isset($_POST["garantia"]) && trim($_POST["garantia"]) != "") {
     $garantia = "'" . mysqli_real_escape_string($conexion, trim($_POST["garantia"])) . "'";
@@ -19,41 +26,69 @@ if (isset($_POST["garantia"]) && trim($_POST["garantia"]) != "") {
 
 $hayImagenNueva = false;
 $imagenBinaria  = null;
+$errorValidacion = "";
 
-if (isset($_FILES["imagen"]) && $_FILES["imagen"]["error"] === UPLOAD_ERR_OK) {
-    $datosArchivo  = file_get_contents($_FILES["imagen"]["tmp_name"]);
-    $imagenBinaria = mysqli_real_escape_string($conexion, $datosArchivo);
-    $hayImagenNueva = true;
-}
-if ($esEdicion) {
-    if ($hayImagenNueva) {
-        $sql = "UPDATE SERVICIO
-                SET id_reserva = $idReserva,
-                    descripcion = '$descripcion',
-                    tiempo_estimado = $tiempoEstimado,
-                    precio_base = $precioBase,
-                    garantia = $garantia,
-                    imagen = '$imagenBinaria'
-                WHERE id = $idServicio";
+// Validación de imagen (opcional; si se sube: máx. 2 MB y MIME JPG/PNG/WEBP)
+if (isset($_FILES["imagen"]) && $_FILES["imagen"]["error"] !== UPLOAD_ERR_NO_FILE) {
+    if ($_FILES["imagen"]["error"] !== UPLOAD_ERR_OK) {
+        $errorValidacion = "Error al subir el archivo de imagen.";
+    } elseif ($_FILES["imagen"]["size"] > 2 * 1024 * 1024) {
+        $errorValidacion = "La imagen supera el tamaño máximo permitido de 2 MB.";
     } else {
-        // Si no sube imagen nueva, conservamos la que ya tenía
-        $sql = "UPDATE SERVICIO
-                SET id_reserva = $idReserva,
-                    descripcion = '$descripcion',
-                    tiempo_estimado = $tiempoEstimado,
-                    precio_base = $precioBase,
-                    garantia = $garantia
-                WHERE id = $idServicio";
-    }
-} else {
-    $valorImagen = $hayImagenNueva ? "'$imagenBinaria'" : "NULL";
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        $mimeType = $finfo->file($_FILES["imagen"]["tmp_name"]);
+        $mimesPermitidos = ["image/jpeg", "image/png", "image/webp"];
 
-    $sql = "INSERT INTO SERVICIO (id_reserva, descripcion, tiempo_estimado, precio_base, garantia, imagen)
-            VALUES ($idReserva, '$descripcion', $tiempoEstimado, $precioBase, $garantia, $valorImagen)";
+        if (!in_array($mimeType, $mimesPermitidos, true)) {
+            $errorValidacion = "Formato de imagen no válido. Solo se permiten JPG, PNG o WEBP.";
+        } else {
+            $datosArchivo   = file_get_contents($_FILES["imagen"]["tmp_name"]);
+            $imagenBinaria  = mysqli_real_escape_string($conexion, $datosArchivo);
+            $hayImagenNueva = true;
+        }
+    }
 }
 
-$exito = mysqli_query($conexion, $sql);
-$errorSql = mysqli_error($conexion);
+$exito = false;
+$errorSql = "";
+
+if ($errorValidacion === "") {
+    if ($esEdicion) {
+        if ($hayImagenNueva) {
+            $sql = "UPDATE SERVICIO
+                    SET id_reserva = $idReserva,
+                        fecha = '$fecha',
+                        descripcion = '$descripcion',
+                        tiempo_estimado = $tiempoEstimado,
+                        precio_base = $precioBase,
+                        garantia = $garantia,
+                        terminada = $terminada,
+                        imagen = '$imagenBinaria'
+                    WHERE id = $idServicio";
+        } else {
+            // Si no sube imagen nueva, conservamos la que ya tenía
+            $sql = "UPDATE SERVICIO
+                    SET id_reserva = $idReserva,
+                        fecha = '$fecha',
+                        descripcion = '$descripcion',
+                        tiempo_estimado = $tiempoEstimado,
+                        precio_base = $precioBase,
+                        garantia = $garantia,
+                        terminada = $terminada
+                    WHERE id = $idServicio";
+        }
+    } else {
+        $valorImagen = $hayImagenNueva ? "'$imagenBinaria'" : "NULL";
+
+        $sql = "INSERT INTO SERVICIO (id_reserva, fecha, descripcion, tiempo_estimado, precio_base, garantia, terminada, imagen)
+                VALUES ($idReserva, '$fecha', '$descripcion', $tiempoEstimado, $precioBase, $garantia, $terminada, $valorImagen)";
+    }
+
+    $exito = mysqli_query($conexion, $sql);
+    $errorSql = mysqli_error($conexion);
+} else {
+    $errorSql = $errorValidacion;
+}
 
 cerrarConexion($conexion);
 
