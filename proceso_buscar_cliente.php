@@ -1,62 +1,122 @@
 <?php
 require_once("config.php");
+
 $conexion = obtenerConexion();
 
-$nombre_cliente = isset($_GET['txtNombreCliente']) ? trim($_GET['txtNombreCliente']) : "";
+$texto = trim($_GET["txtBuscar"] ?? "");
+$like = "%" . $texto . "%";
 
-$sql = "SELECT c.*, p.municipio AS municipiodesc 
-        FROM cliente c 
-        LEFT JOIN CODIGO_POSTAL p ON c.idprovincia = p.id 
-        WHERE c.nombre LIKE '%$nombre_cliente%';";
+$sql = "SELECT c.id, c.nombre_completo, c.telefono, c.email, cp.codigo, cp.municipio
+        FROM CLIENTE c
+        LEFT JOIN CODIGO_POSTAL cp ON c.id_cp = cp.id
+        WHERE c.deleted_at IS NULL
+          AND (c.nombre_completo LIKE ?
+               OR c.email LIKE ?
+               OR c.telefono LIKE ?
+               OR cp.municipio LIKE ?
+               OR cp.codigo LIKE ?)
+        ORDER BY c.nombre_completo;";
 
-$resultado = mysqli_query($conexion, $sql);
+$stmt = mysqli_prepare($conexion, $sql);
+mysqli_stmt_bind_param($stmt, "sssss", $like, $like, $like, $like, $like);
+mysqli_stmt_execute($stmt);
+$resultado = mysqli_stmt_get_result($stmt);
+$total = mysqli_num_rows($resultado);
 
-if ($resultado && mysqli_num_rows($resultado) > 0) { 
-    $mensaje = "<div class='container mt-5'>";
-    $mensaje .= "<h2 class='text-center mb-4 text-primary fw-bold'>Resultado de la búsqueda</h2>";
-    $mensaje .= "<div class='table-responsive'>";
-    $mensaje .= "<table class='table table-striped table-hover align-middle shadow-sm'>";
-    $mensaje .= "<thead class='table-dark'><tr><th>ID</th><th>NOMBRE</th><th>APELLIDOS</th><th>TELÉFONO</th><th>MUNICIPIO</th><th>ACCIÓN</th></tr></thead>";
-    $mensaje .= "<tbody>";
-    
-    while ($fila = mysqli_fetch_assoc($resultado)) {
-        $mensaje .= "<tr>";
-        $mensaje .= "<td>" . $fila['idcliente'] . "</td>";
-        $mensaje .= "<td>" . $fila['nombre'] . "</td>";
-        $mensaje .= "<td>" . $fila['apellidos'] . "</td>";
-        $mensaje .= "<td>" . $fila['telefono'] . "</td>";
-        $mensaje .= "<td>" . $fila['municipiodesc'] . "</td>";
+$filas = "";
+while ($fila = mysqli_fetch_assoc($resultado)) {
+    // Generar iniciales dinámicas para el avatar
+    $partesNombre = explode(" ", trim($fila["nombre_completo"]));
+    $iniciales = strtoupper(substr($partesNombre[0], 0, 1) . (isset($partesNombre[1]) ? substr($partesNombre[1], 0, 1) : ""));
+    $avatar = "<div class='rounded-circle bg-primary bg-opacity-15 text-primary fw-bold d-flex align-items-center justify-content-center shadow-sm' style='width: 40px; height: 40px; font-size: 0.85rem;'>" . $iniciales . "</div>";
 
-        $mensaje .= "<td class='d-flex gap-2'>";
-        
-
-        $mensaje .= "<form action='editar_cliente.php' method='post' class='m-0'>";
-        $mensaje .= "<input type='hidden' name='cliente' value='" . htmlspecialchars(json_encode($fila), ENT_QUOTES) . "' />";
-        $mensaje .= "<button type='submit' name='Editar' class='btn btn-primary btn-sm'><i class='bi bi-pencil-square'></i></button>";
-        $mensaje .= "</form>";
-
-
-        $mensaje .= "<form action='proceso_borrar_cliente.php' method='post' class='m-0'>";
-        $mensaje .= "<input type='hidden' name='idcliente' value='" . $fila['idcliente'] . "' />";
-        $mensaje .= "<button type='submit' name='btnBorrar' class='btn btn-danger btn-sm'><i class='bi bi-trash'></i></button>";
-        $mensaje .= "</form>";
-
-        $mensaje .= "</td>";
-        $mensaje .= "</tr>";
+    if ($fila["telefono"] == null) {
+        $telefono = "<span class='text-muted fst-italic'>Sin teléfono</span>";
+    } else {
+        $telefono = "<i class='bi bi-telephone text-muted me-1'></i>" . htmlspecialchars($fila["telefono"]);
     }
-    
-    $mensaje .= "</tbody></table></div></div>"; 
-} else { 
-    $mensaje = "<div class='container mt-5 text-center'>";
-    $mensaje .= "<div class='alert alert-warning shadow-sm p-4 d-inline-block' role='alert'>";
-    $mensaje .= "<h4 class='alert-heading fw-bold'>Cliente no encontrado</h4>";
-    $mensaje .= "<p class='mb-0'>No hay ningún cliente registrado con el nombre <strong>" . htmlspecialchars($nombre_cliente) . "</strong>.</p>";
-    $mensaje .= "</div></div>";
+
+    $filas .= "<tr class='align-middle'>";
+    $filas .= "<td class='ps-3'>" . $avatar . "</td>";
+    $filas .= "<td class='fw-bold text-dark'>" . htmlspecialchars($fila["nombre_completo"]) . "</td>";
+    $filas .= "<td class='text-secondary'><i class='bi bi-envelope text-muted me-1'></i>" . htmlspecialchars($fila["email"]) . "</td>";
+    $filas .= "<td>" . $telefono . "</td>";
+    $filas .= "<td><span class='badge bg-light text-dark border px-2 py-1'><i class='bi bi-geo-alt text-danger me-1'></i>" . htmlspecialchars($fila["codigo"] . " - " . $fila["municipio"]) . "</span></td>";
+    $filas .= "<td class='text-end pe-3'>";
+    $filas .= "<a href='editar_cliente.php?id=" . $fila["id"] . "' class='btn btn-sm btn-outline-primary me-1 px-2 py-1 shadow-sm' title='Editar cliente'><i class='bi bi-pencil-square'></i></a>";
+    $filas .= "<form class='d-inline' action='proceso_borrar_cliente.php' method='post' onsubmit=\"return confirm('¿Seguro que quieres borrar este cliente?');\">";
+    $filas .= "<input type='hidden' name='id' value='" . $fila["id"] . "'>";
+    $filas .= "<button type='submit' class='btn btn-sm btn-outline-danger px-2 py-1 shadow-sm' title='Eliminar cliente'><i class='bi bi-trash'></i></button>";
+    $filas .= "</form>";
+    $filas .= "</td>";
+    $filas .= "</tr>";
 }
 
+mysqli_stmt_close($stmt);
+cerrarConexion($conexion);
+
 include_once("cabecera.html");
-echo $mensaje;
 ?>
 
-</body>
-</html>
+<div class="container py-5" id="formularios">
+    <!-- Encabezado superior -->
+    <div class="bg-white p-4 rounded-4 shadow-sm border-0 mb-4 d-flex align-items-center justify-content-between flex-wrap gap-3">
+        <div class="d-flex align-items-center gap-3">
+            <div class="bg-primary text-white p-3 rounded-circle shadow-sm d-flex align-items-center justify-content-center" style="width: 55px; height: 55px;">
+                <i class="bi bi-search fs-4" aria-hidden="true"></i>
+            </div>
+            <div>
+                <h2 class="fw-bold mb-1 fs-3 text-primary">Resultado de la Búsqueda</h2>
+                <p class="mb-0 text-muted">Criterio aplicado: <span class="fw-semibold text-dark">«<?php echo htmlspecialchars($texto); ?>»</span></p>
+            </div>
+        </div>
+        <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill fw-semibold">
+            <?php echo $total; ?> resultado(s)
+        </span>
+    </div>
+
+    <!-- Resultados -->
+    <?php if ($total == 0): ?>
+        <div class="card border-0 shadow-sm p-5 text-center bg-white rounded-4 mb-4">
+            <div class="mb-3 text-warning">
+                <i class="bi bi-search display-4"></i>
+            </div>
+            <h4 class="fw-bold text-dark">Sin coincidencias</h4>
+            <p class="text-muted mb-4">No se han encontrado clientes que coincidan con los datos introducidos.</p>
+            <div>
+                <a href="buscar_cliente.php" class="btn btn-primary px-4 fw-semibold shadow-sm">
+                    <i class="bi bi-search me-1" aria-hidden="true"></i> Probar otra búsqueda
+                </a>
+            </div>
+        </div>
+    <?php else: ?>
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+            <div class="table-responsive m-0">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-dark text-uppercase fs-7">
+                        <tr>
+                            <th class="ps-3 py-3" style="width: 60px;">Avatar</th>
+                            <th class="py-3">Nombre completo</th>
+                            <th class="py-3">Email</th>
+                            <th class="py-3">Teléfono</th>
+                            <th class="py-3">Código postal / Municipio</th>
+                            <th class="text-end pe-3 py-3">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php echo $filas; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <div>
+        <a href="buscar_cliente.php" class="btn btn-outline-secondary px-4 fw-semibold shadow-sm">
+            <i class="bi bi-arrow-left me-1" aria-hidden="true"></i>
+            Volver al buscador
+        </a>
+    </div>
+</div>
+
+<?php include_once("pie.html"); ?>

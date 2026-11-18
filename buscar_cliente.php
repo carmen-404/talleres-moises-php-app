@@ -1,75 +1,50 @@
 <?php
-require_once("config.php");
-?>
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Talleres Moises · Gestión</title>
-  <link rel="icon" type="image/svg+xml" href="img/favicon/favicon.svg">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-  <link href="css/style.css" rel="stylesheet">
-  <link href="css/admin.css" rel="stylesheet">
-  <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</head>
-<body>
-
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand" href="index.php">
-                <img src="img/logo/logo.svg" alt="Talleres Moises" height="156">
-            </a>
-
-            <button class="navbar-toggler" type="button"
-                data-bs-toggle="collapse" data-bs-target="#menuPrincipal"
-                aria-controls="menuPrincipal" aria-expanded="false"
-                aria-label="Abrir menú">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="menuPrincipal">
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.php"><i class="bi bi-house-fill"></i> Inicio</a>
-                    </li>
-
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-people-fill"></i> Clientes
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="alta_cliente.php"><i class="bi bi-plus-circle me-2"></i>Alta de clientes</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="buscar_cliente.php"><i class="bi bi-search me-2"></i>Buscar un cliente</a></li>
-                            <li><a class="dropdown-item" href="listado_clientes.php"><i class="bi bi-list-ul me-2"></i>Listado de clientes</a></li>
-                            <li><a class="dropdown-item" href="listado_clientes_filtro.php"><i class="bi bi-funnel me-2"></i>Listado filtrado de clientes</a></li>
-                        </ul>
-                    </li>
-require_once("funcionesBD.php");
-
 include_once("cabecera.html");
 ?>
 
-<div class="container d-flex justify-content-center align-items-center mt-5">
-    <div class="card shadow-sm p-4 w-100" style="max-width: 500px;">
-        <form action="proceso_buscar_cliente.php" name="frmBuscarCliente" id="frmBuscarCliente" method="get">
-            <fieldset>
-                <legend class="mb-4 text-center fw-bold text-primary">Buscar un cliente</legend>
-                
-                <div class="mb-4">
-                    <label class="form-label fw-semibold" for="txtNombreCliente">Nombre</label>
-                    <input id="txtNombreCliente" name="txtNombreCliente" placeholder="Nombre del cliente" class="form-control" type="text" required>
+<div class="container py-5" id="formularios">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-8">
+            <!-- Tarjeta Principal de Búsqueda -->
+            <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+                <div class="bg-primary bg-gradient p-4 text-white">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="bg-white text-primary p-3 rounded-circle shadow-sm fs-4 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                            <i class="bi bi-search" aria-hidden="true"></i>
+                        </div>
+                        <div>
+                            <h2 class="fw-bold mb-1 fs-3 text-white">Buscador de Clientes</h2>
+                            <p class="mb-0 text-white-50">Localice rápidamente a cualquier cliente registrado en el sistema</p>
+                        </div>
+                    </div>
                 </div>
-                
-                <div class="d-grid">
-                    <input type="submit" id="btnAceptarBuscarCliente" name="btnAceptarBuscarCliente" class="btn btn-primary btn-block" value="Aceptar" />
+
+                <div class="card-body p-4 p-md-5 bg-light">
+                    <form action="proceso_buscar_cliente.php" name="frmBuscarCliente" id="frmBuscarCliente" method="get">
+                        <div class="bg-white p-4 rounded-4 shadow-sm border-0 mb-3">
+                            <label class="form-label fw-semibold text-secondary mb-3" for="txtBuscar">Criterio de búsqueda</label>
+                            
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-person-lines-fill"></i></span>
+                                <input id="txtBuscar" name="txtBuscar" class="form-control border-start-0 ps-0" type="text"
+                                       placeholder="Escribe nombre, email, teléfono o municipio..." autocomplete="off" required>
+                            </div>
+                            <div class="form-text text-muted mt-2">
+                                <i class="bi bi-info-circle me-1"></i> Puedes buscar por cualquier coincidencia parcial o total.
+                            </div>
+                        </div>
+
+                        <div class="d-grid pt-2">
+                            <button type="submit" id="btnBuscar" class="btn btn-primary btn-lg fw-semibold shadow-sm py-3">
+                                <i class="bi bi-search me-2" aria-hidden="true"></i>
+                                Realizar búsqueda
+                            </button>
+                        </div>
+                    </form>
                 </div>
-            </fieldset>
-        </form>
+            </div>
+        </div>
     </div>
 </div>
 
-</body>
-</html>
+<?php include_once("pie.html"); ?>
