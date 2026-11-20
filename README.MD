@@ -44,17 +44,20 @@ La primera parte (web corporativa estática) está en el repositorio [Talleres-M
 | Password | `test` |
 
 > Los scripts SQL están en la carpeta `sql/`:
-> - `backup.sql`: crea la base de datos `talleres_moises`, las tablas, relaciones y datos.
+> - `backup.sql`: crea la base de datos `talleres_moises`, las tablas, relaciones y datos de la tabla genérica (codigos_postales).
 > - `backup_sin_create_database.sql`: igual, pero sin `CREATE DATABASE` (para hostings donde la base de datos ya viene creada).
+> - `seed_data.sql`: inserta datos ficticios en todas las tablas para poder hacer pruebas.
 
 ## Puesta en marcha
 
 1. Copiar la carpeta en `www/` (docker-lamp) y abrir `http://localhost/talleres-moises-php-app/`.
-2. Importar `sql/backup.sql` (crea BD, tablas, relaciones y datos). Si la BD ya existe: `sql/backup_sin_create_database.sql`.
-3. Requiere PHP 8.0+ con `mysqli` (y extensión `gd` para imágenes) y MySQL 8.0.16+ / MariaDB 10.2.1+ (restricción `CHECK` de `franja_horaria`).
+2. Importar `sql/backup.sql` (crea BD, tablas, relaciones e inserta los datos de la tabla genérica). Si la BD ya existe: `sql/backup_sin_create_database.sql`.
+3. Requiere PHP 8.0+ con `mysqli` (y extensión `gd` para imágenes) y MySQL 8.0.16+ / MariaDB 10.2.1+.
 4. Para que PHP conecte con la base de datos debe usarse el archivo `config.php` (no `funcionesDB.php`).
 
 ### Entidades (modelo relacional)
+
+![Modelo Relacional phpMyAdmin](./img/db_relational_model.png)
 
 ```mermaid
 erDiagram
@@ -124,10 +127,10 @@ erDiagram
 
 | Alumno | Entidad responsable |
 | :--- | :--- |
-| Carmen | `Reserva` |
-| Moises | `Servicios` |
-| Jose Manuel | `Coche` |
-| Javier | `Cliente` |
+| Javier Rodríguez | `Cliente` |
+| José Manuel Payán | `Coche` |
+| Carmen Díaz | `Reserva` |
+| Moisés Orozco | `Servicios` |
 
 ## Tecnologías
 

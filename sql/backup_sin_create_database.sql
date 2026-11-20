@@ -16,7 +16,7 @@
 -- utf8mb4_unicode_ci: provides Unicode-aware sorting and comparisons,
 --                     ignoring case (uppercase/lowercase) and generally accents.
 --                     This also affects UNIQUE constraints, preventing duplicates
---                     that differ only in case or accents.
+--                     that differ only in case or accents. (CHECKED)
 -- =====================================================================
 SET NAMES utf8mb4;
 
@@ -72,31 +72,24 @@ CREATE TABLE `CLIENTE` (
 -- Cada coche pertenece a un único cliente.
 -- La matrícula es única.
 -- =====================================================
-CREATE TABLE `COCHE` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `marca` VARCHAR(100) NOT NULL,
-  `modelo` VARCHAR(100) NOT NULL,
-  `matricula` VARCHAR(15) NOT NULL,
-  `anio` INT NOT NULL,
-  `id_cliente` INT NOT NULL,
-  -- atributo para implementar el borrado lógico
-  `deleted_at` DATETIME NULL DEFAULT NULL,
-  `imagen` MEDIUMBLOB NULL, -- imagen del coche (opcional)
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_coche_matricula` (`matricula`),
-
-  -- [ONLY FOR SOFT DELETE] Handle UNIQUE constraint collision (keeping active plates strictly unique)
-  -- Standard approach: Change UNIQUE(matricula) to UNIQUE(matricula, deleted_at)
-  -- MySQL allows multiple NULL values in UNIQUE indexes, so active cars remain strictly unique.
-  -- UNIQUE KEY `uq_coche_matricula_deleted` (`matricula`, `deleted_at`),
-
-  KEY `idx_coche_id_cliente` (`id_cliente`),
-  -- Index para filtrar los coche activos de forma óptima si se usa borrado lógico
-  KEY `idx_coche_deleted_at` (`deleted_at`),
-  -- Ref: COCHE.id_cliente > CLIENTE.id
-  CONSTRAINT `fk_coche_cliente` FOREIGN KEY (`id_cliente`) REFERENCES `CLIENTE` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
+  CREATE TABLE `COCHE` (
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `fecha_entrada` DATE NOT NULL,
+    `reparar` TINYINT(1) NOT NULL DEFAULT 0,
+    `marca` VARCHAR(100) NOT NULL,
+    `modelo` VARCHAR(100) NOT NULL,
+    `matricula` VARCHAR(15) NOT NULL,
+    `anio` INT NOT NULL,
+    `id_cliente` INT DEFAULT NULL,
+    `deleted_at` DATETIME DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uq_coche_matricula` (`matricula`),
+    KEY `idx_coche_id_cliente` (`id_cliente`),
+    -- Index para filtrar los coche activos de forma óptima si se usa borrado lógico
+    KEY `idx_coche_deleted_at` (`deleted_at`),
+    -- Ref: COCHE.id_cliente > CLIENTE.id
+    CONSTRAINT `fk_coche_cliente` FOREIGN KEY (`id_cliente`) REFERENCES `CLIENTE` (`id`) ON DELETE SET NULL
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
 -- RESERVA (CARMEN DÍAZ)
@@ -170,3 +163,24 @@ CREATE TABLE `SERVICIO` (
   -- Relación con RESERVA: Una reserva tiene varios servicios. Si la reserva se borra, sus servicios mueren con ella.
   CONSTRAINT `fk_servicio_reserva` FOREIGN KEY (`id_reserva`) REFERENCES `RESERVA` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+-- =====================================================================
+-- INSERCIÓN DE LOS DATOS DE LA TABLA GENÉRICA
+-- =====================================================================
+
+-- 1. CODIGO_POSTAL
+
+INSERT INTO `CODIGO_POSTAL` (`id`, `codigo`, `municipio`) VALUES
+(1, '41001', 'Sevilla'),
+(2, '41003', 'Sevilla'),
+(3, '41005', 'Sevilla'),
+(4, '41008', 'Sevilla'),
+(5, '41013', 'Sevilla'),
+(6, '41700', 'Dos Hermanas'),
+(7, '41500', 'Alcalá de Guadaíra'),
+(8, '41927', 'Mairena del Aljarafe'),
+(9, '41900', 'Camas'),
+(10, '41930', 'Bormujos'),
+(11, '41940', 'Tomares'),
+(12, '41309', 'La Rinconada');
