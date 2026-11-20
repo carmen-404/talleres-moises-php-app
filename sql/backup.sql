@@ -167,3 +167,24 @@ CREATE TABLE `SERVICIO` (
   -- Relación con RESERVA: Una reserva tiene varios servicios. Si la reserva se borra, sus servicios mueren con ella.
   CONSTRAINT `fk_servicio_reserva` FOREIGN KEY (`id_reserva`) REFERENCES `RESERVA` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+-- =====================================================================
+-- INSERCIÓN DE LOS DATOS DE LA TABLA GENÉRICA
+-- =====================================================================
+
+-- 1. CODIGO_POSTAL
+
+INSERT INTO `CODIGO_POSTAL` (`id`, `codigo`, `municipio`) VALUES
+(1, '41001', 'Sevilla'),
+(2, '41003', 'Sevilla'),
+(3, '41005', 'Sevilla'),
+(4, '41008', 'Sevilla'),
+(5, '41013', 'Sevilla'),
+(6, '41700', 'Dos Hermanas'),
+(7, '41500', 'Alcalá de Guadaíra'),
+(8, '41927', 'Mairena del Aljarafe'),
+(9, '41900', 'Camas'),
+(10, '41930', 'Bormujos'),
+(11, '41940', 'Tomares'),
+(12, '41309', 'La Rinconada');

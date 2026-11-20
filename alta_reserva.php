@@ -88,7 +88,7 @@ include_once("cabecera.html");
                 Imagen
             </div>
             <div class="card-body">
-                <label class="form-label" for="imagen">Imagen de la reserva (opcional, máx. 2 MB)</label>
+                <label class="form-label" for="imagen">Imagen de la firma del cliente aceptando la reserva (opcional, máx. 2 MB)</label>
                 <input id="imagen" name="imagen" class="form-control" type="file" accept="image/*">
             </div>
         </div>

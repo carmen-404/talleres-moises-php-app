@@ -111,7 +111,7 @@ include_once("cabecera.html");
                          style="width:120px; height:120px; object-fit:cover;">
                 <?php } ?>
                 <label class="form-label d-block" for="imagen">
-                    <?php echo ($imagenActual != "") ? "Cambiar imagen (opcional: si no eliges ninguna se conserva la actual, máx. 2 MB)" : "Imagen de la reserva (opcional, máx. 2 MB)"; ?>
+                    <?php echo ($imagenActual != "") ? "Cambiar imagen de la firma (opcional: si no eliges ninguna se conserva la actual, máx. 2 MB)" : "Imagen de la firma del cliente aceptando la reserva (opcional, máx. 2 MB)"; ?>
                 </label>
                 <input id="imagen" name="imagen" class="form-control" type="file" accept="image/*">
             </div>
